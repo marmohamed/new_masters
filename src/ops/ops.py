@@ -9,7 +9,8 @@ import numpy as np
 # l2_decay : tf_contrib.layers.l2_regularizer(0.0001)
 
 # weight_init = tf_contrib.layers.variance_scaling_initializer()
-weight_init = tf.contrib.layers.xavier_initializer()
+# weight_init = tf.contrib.layers.xavier_initializer()
+weight_init = tf.initializers.GlorotUniform()
 # weight_regularizer = tf_contrib.layers.l2_regularizer(5e-4)
 
 
