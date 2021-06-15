@@ -78,8 +78,8 @@ def fc(c, **kwargs):
 def fully_conneted_not_trained(x, units, use_bias=True, scope='fully_0'):
     with tf.variable_scope(scope):
         weight_init = tf.contrib.layers.xavier_initializer()
-        weight_regularizer = tf_contrib.layers.l2_regularizer(0.0001)
-
+        # weight_regularizer = tf_contrib.layers.l2_regularizer(0.0001)
+        weight_regularizer = None
         x = tf.layers.dense(x, units=units, kernel_initializer=weight_init, kernel_regularizer=weight_regularizer, use_bias=use_bias)
 
         return x
