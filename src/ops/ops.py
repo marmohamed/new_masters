@@ -1,5 +1,5 @@
 import tensorflow as tf
-import tensorflow.contrib as tf_contrib
+# import tensorflow.contrib as tf_contrib
 import numpy as np
 
 
