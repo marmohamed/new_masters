@@ -1,4 +1,4 @@
-from model_fusion import *
+from model import *
 from Trainer import *
 import argparse
 

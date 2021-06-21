@@ -117,7 +117,7 @@ class Loss(object):
         self.scope = scope
 
     def __call__(self, truth, predictions, **params):
-        with tf.variable_scope(self.scope):
+        # with tf.variable_scope(self.scope):
             return self._compute_loss(truth, predictions, **params)
 
     @abstractmethod

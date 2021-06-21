@@ -1,9 +1,9 @@
 from ops.ops import *
 from utils.utils import *
 
-def FPN(layers_outputs, scope, is_training=True, reuse=False):
+def FPN(layers_outputs, scope, reuse=False):
 
-    with tf.variable_scope(scope, reuse=reuse):
+    # with tf.variable_scope(scope, reuse=reuse):
 
         new_features = [128] * len(layers_outputs)
         new_layers = []
@@ -16,7 +16,7 @@ def FPN(layers_outputs, scope, is_training=True, reuse=False):
 
         for i in range(len(layers_outputs)-1, -1, -1):
             new_layer = conv(layers_outputs[i], new_features[i], kernel=1, stride=1, scope='conv0_' + str(i))
-            new_layer = batch_norm(new_layer, is_training=is_training, scope='bn0_' + str(i))
+            new_layer = batch_norm(new_layer, scope='bn0_' + str(i))
             new_layer = relu(new_layer)
             # new_layer = dropout(new_layer, rate=0.2, scope='new_layer_pre_fpn_' + str(i), training=is_training)
 
@@ -43,14 +43,14 @@ def FPN(layers_outputs, scope, is_training=True, reuse=False):
                 new_layer = tf.concat([new_layer, prev_layer], axis=-1)
                 
                 new_layer = conv(new_layer, new_features[i], kernel=3, stride=1, scope='conv1_' + str(i))
-                new_layer = batch_norm(new_layer, is_training=is_training, scope='bn1_' + str(i))
+                new_layer = batch_norm(new_layer, scope='bn1_' + str(i))
                 new_layer = relu(new_layer)
                 # new_layer = dropout(new_layer, rate=0.2, scope='new_layer_fpn_' + str(i), training=is_training)
 
             prev_layer = new_layer
 
             new_layer = conv(new_layer, channels[i], kernel=3, stride=1, scope='conv2_' + str(i))
-            new_layer = batch_norm(new_layer, is_training=is_training, scope='bn2_' + str(i))
+            new_layer = batch_norm(new_layer, scope='bn2_' + str(i))
             new_layer = relu(new_layer)
             # new_layer = dropout(new_layer, rate=0.2, scope='new_layer_post_fpn_' + str(i), training=is_training)
 
