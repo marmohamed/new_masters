@@ -9,7 +9,7 @@ from utils.utils import *
 from utils.anchors import *
 from utils.nms import *
 
-from loss.losses import *
+from loss.losses_v2 import *
 
 from models.ResNetBuilder import *
 from models.ResnetImage import *
@@ -138,8 +138,7 @@ class Model(object):
                 loss_calculator = LossCalculator()
                 loss_params = {'focal_loss': self.params['focal_loss'], 'weight': self.params['weight_loss'], 'mse': self.params['mse_loss']}
                 self.classification_loss, self.loc_reg_loss, self.dim_reg_loss,\
-                                    self.theta_reg_loss, self.dir_reg_loss, self.corners_loss, self.oclussion_loss,\
-                                    self.precision, self.recall, self.iou, self.iou_2d, self.iou_loc, self.iou_dim, self.theta_accuracy = loss_calculator(
+                                    self.theta_reg_loss, self.dir_reg_loss = loss_calculator(
                                                             self.y_true,
                                                             self.final_output, 
                                                             cls_loss_instance, 
@@ -154,19 +153,19 @@ class Model(object):
 
 
                 self.regression_loss_bev = 0
-                if self.params['train_loc'] == 1:
-                            self.regression_loss_bev += 10 * self.weight_loc * self.loc_reg_loss 
-                if self.params['train_dim'] == 1:
-                            self.regression_loss_bev += 10 * self.weight_dim * self.dim_reg_loss 
-                if self.params['train_theta'] == 1:
-                            self.regression_loss_bev += 5 * self.weight_theta * self.theta_reg_loss 
+                # if self.params['train_loc'] == 1:
+                self.regression_loss_bev += 10 * self.loc_reg_loss 
+                # if self.params['train_dim'] == 1:
+                self.regression_loss_bev += 10* self.dim_reg_loss 
+                # if self.params['train_theta'] == 1:
+                self.regression_loss_bev += 5 * self.theta_reg_loss 
 
                         
                 self.model_loss_bev = 0
 
-                self.model_loss_bev +=  1 * self.weight_cls * self.classification_loss
+                self.model_loss_bev +=  1 * self.classification_loss
 
-                # self.model_loss_bev +=  1 * self.regression_loss_bev
+                self.model_loss_bev +=  1 * self.regression_loss_bev
 
                 # self.model_loss_bev += 5 * (self.weight_loc + self.weight_dim)  * self.corners_loss
                 # self.model_loss_bev += self.weight_dir * self.dir_reg_loss
@@ -191,6 +190,7 @@ class Model(object):
                                                     self.weight_loc,
                                                     self.weight_theta,
                                                     self.weight_dir], outputs=[self.final_output])
+                # print(self.model.summary())
                 self.model.compile(optimizer=self.opt_lidar, loss=self.model_loss)
 
                 # self.saver = tf.train.Saver(max_to_keep=1)
