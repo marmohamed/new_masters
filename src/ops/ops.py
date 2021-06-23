@@ -33,46 +33,17 @@ def conv(x, channels, kernel=4, stride=2, padding='SAME', use_bias=True, scope='
         if focal_init is not None:
             np_arr = np.zeros([kernel])
             np_arr[0] = focal_init
-            if use_ws_reg:
-                x = tf.keras.layers.Conv2D(channels,
-                                    kernel_size=kernel, kernel_initializer=weight_init,
-                                    bias_initializer=tf.constant_initializer(np_arr),
-                                    kernel_regularizer=weight_regularizer,
-                                    # kernel_regularizer=ws_reg,
-                                    strides=stride, use_bias=use_bias, padding=padding)(x)
-            else:
-                x = tf.keras.layers.Conv2D(filters=channels,
+            x = tf.keras.layers.Conv2D(filters=channels,
                                 kernel_size=kernel, kernel_initializer=weight_init,
                                 bias_initializer=tf.constant_initializer(np_arr),
                                 # kernel_regularizer=weight_regularizer,
                                 strides=stride, use_bias=use_bias, padding=padding)(x)
-            return x
         else:
-            if separable:
-                x = tf.layers.SeparableConv2D(channels,
-                        kernel,
-                        strides=stride,
-                        padding=padding,
-                        depth_multiplier=1,
-                        activation=None,
-                        use_bias=use_bias,
-                        depthwise_initializer=weight_init,
-                        pointwise_initializer=weight_init,
-                        depthwise_regularizer=weight_regularizer,
-                        pointwise_regularizer=weight_regularizer)
-            else:
-                if use_ws_reg:
-                    x = tf.keras.layers.Conv2D(channels,
+            x = tf.keras.layers.Conv2D(channels,
                                 kernel_size=kernel, kernel_initializer=weight_init,
                                 kernel_regularizer=weight_regularizer,
                                 # kernel_regularizer=ws_reg,
                                 strides=stride, use_bias=use_bias, padding=padding)(x)
-                else:
-                    x = tf.keras.layers.Conv2D(channels,
-                                kernel_size=kernel, kernel_initializer=weight_init,
-                                # kernel_regularizer=weight_regularizer,
-                                strides=stride, use_bias=use_bias, padding=padding)(x)
-
         return x
 
 
@@ -216,7 +187,7 @@ def get_residual_layer(res_n) :
 ##################################################################################
 
 def flatten(x) :
-    return tf.layers.flatten(x)
+    return tf.keras.layers.Flatten()(x)
 
 def global_avg_pooling(x):
     gap = tf.reduce_mean(x, axis=[1, 2], keepdims=True)
@@ -231,8 +202,8 @@ def avg_pooling(x) :
 
 
 def relu(x):
-    # return tf.nn.relu(x)
-    return leaky_relu(x)
+    return tf.keras.layers.Activation(tf.keras.activations.relu)(x)
+    # return leaky_relu(x)
 
 def leaky_relu(x):
     return tf.nn.leaky_relu(x)

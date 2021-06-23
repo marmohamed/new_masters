@@ -5,16 +5,15 @@ import argparse
 def main(args):
     print('Building the model')
     if args.train_fusion or args.train_end_to_end:
-        from model_fusion import *
+        from model_fusion import Model
         params = {
             'fusion': True
         }
-    else args.train_bev:
-        from model import *
+    else :
+        from model import Model
         params = {
             'fusion': False
         }
-
     
     model = Model(graph=None, **params)
 
@@ -43,24 +42,24 @@ def main(args):
         'start_epoch': int(args.start_epoch),
         'augment': args.augment
     }
-    if args.train_images_seg in ['True', 'true']:
+    if args.train_images_seg:
         print('Train Segmentation')
         trainer.train_images_seg(**params)
 
-    if args.train_bev in ['True', 'true']:
+    if args.train_bev:
         print('Train Detection')
         trainer.train_bev(**params)
 
-    if args.train_bev_lr_find in ['True', 'true']:
+    if args.train_bev_lr_find:
         print('Train Detection - LR Find')
         trainer.train_bev_lr_find(**params)
 
 
-    if args.train_fusion in ['True', 'true']:
+    if args.train_fusion:
         print('Train Fusion')
         trainer.train_fusion(**params)
 
-    if args.train_end_to_end in ['True', 'true']:
+    if args.train_end_to_end:
         print('Train end to end')
         trainer.train_end_to_end(**params)
 

@@ -387,7 +387,8 @@ class DetectionDatasetLoader(DatasetLoader):
                 _, label, truncated, occlusion = data_reader_obj.label_reader.read_label()
                 label = get_target(label, truncated, occlusion, anchors=anchors)
                  
-                yield(camera_image, lidar_image, label)
+                # yield(camera_image, lidar_image, label)
+                yield lidar_image, label
 
 
 

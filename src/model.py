@@ -170,7 +170,7 @@ class Model(object):
                 def get_loss(truth, predictions):
                     loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)(truth[:, :, :, :, 8], predictions[:, :, :, :, 8])
 
-                    reg_loss = tf.keras.losses.MSE()
+                    reg_loss = tf.keras.losses.MeanSquaredError()
                     loss_fn = lambda t, p: tf.where(tf.greater_equal(truth[:, :, :, :, 8],0.5), reg_loss(t, p), tf.zeros_like(p))
                     # loc_ratios = [5, 5, 1]
                     reg_losses1 = [loss_fn(truth[:, :, :, :, i], tf.math.sigmoid(predictions[:, :, :, :, i])-0.5) for i in range(3)] 
