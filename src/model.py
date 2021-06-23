@@ -198,7 +198,6 @@ class Model(object):
                 self.model_loss = get_loss
 
                      
-                self.global_step = tf.Variable(0, name='global_step', trainable=False)
                 self.opt_lidar = tf.keras.optimizers.Adam(1e-3)
 
                 self.model = tf.keras.models.Model(inputs=[self.train_inputs_lidar], outputs=[self.final_output])
