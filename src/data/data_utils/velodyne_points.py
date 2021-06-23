@@ -29,10 +29,7 @@ class LidarReader:
 
     def read_lidar(self):
 
-        points = np.fromfile(self.lidar_path, dtype=np.float32)
-        ln = points.shape[0]
-        points = points[:(ln//4)*4]
-        points = points.reshape(-1, 4)
+        points = np.fromfile(self.lidar_path, dtype=np.float32).reshape(-1, 4)
         calib = Calibration(self.calib_path)
         img_height, img_width, _ = cv2.imread(self.image_path).shape
         imgfov_pc_velo, pts_2d, fov_inds = get_lidar_in_image_fov(points[:, :3],

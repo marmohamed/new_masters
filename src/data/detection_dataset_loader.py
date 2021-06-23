@@ -71,9 +71,9 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
             indx = self.indexes[i]
 
             camera_path = self.list_camera_paths[indx]
-            calib_path = self.list_lidar_paths[indx]
+            calib_path = self.list_calib_paths[indx]
             label_path = self.list_label_paths[indx]
-            lidar_path = self.list_calib_paths[indx]
+            lidar_path = self.list_lidar_paths[indx]
 
             print(camera_path)
 
