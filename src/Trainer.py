@@ -28,11 +28,11 @@ class ModelTrainer(object):
         self.model = model
         self.data_base_path = data_base_path
 
-        self.segmentation_trainer = SegmentationTrainer(self.model, self.data_base_path, None)
-        self.fusion_trainer = FusionDetectionTrainer(self.model, self.data_base_path, None)
+        # self.segmentation_trainer = SegmentationTrainer(self.model, self.data_base_path, None)
+        # self.fusion_trainer = FusionDetectionTrainer(self.model, self.data_base_path, None)
         self.bev_trainer = BEVDetectionTrainer(self.model, self.data_base_path, None)
-        self.end_to_end_trainer = EndToEndDetectionTrainer(self.model, self.data_base_path, None)
-        self.detection_trainer_lr_find = BEVDetectionTrainerLRFind(self.model, self.data_base_path, None)
+        # self.end_to_end_trainer = EndToEndDetectionTrainer(self.model, self.data_base_path, None)
+        # self.detection_trainer_lr_find = BEVDetectionTrainerLRFind(self.model, self.data_base_path, None)
 
     def train_end_to_end(self, **kwargs):
         d = {'num_summary_images': kwargs['num_summary_images']}

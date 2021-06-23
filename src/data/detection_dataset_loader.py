@@ -5,6 +5,7 @@ from utils.utils import *
 import math
 import os
 import random
+import glob
 
 from data.data_utils.data_reader import *
 from data.data_utils.target_utils import *
@@ -74,10 +75,10 @@ class DetectionDatasetLoader(DatasetLoader):
                 ln = int(self.num_samples)
 
 
-            self.list_camera_paths = list(map(lambda x: self.base_path+'/data_object_image_3/training/image_3/' + x + '.png', list_files[:ln]))
-            self.list_lidar_paths = list(map(lambda x: self.base_path+'/data_object_velodyne/training/velodyne/' + x + '.bin', list_files[:ln]))
-            self.list_label_paths = list(map(lambda x: self.base_path + '/data_object_label_2/training/label_2/' + x + '.txt', list_files[:ln]))
-            self.list_calib_paths = list(map(lambda x: self.base_path + '/data_object_calib/training/calib/' + x + '.txt', list_files[:ln]))
+            self.list_camera_paths = glob.glob(os.path.join(self.base_path, 'image_2/*')
+            self.list_lidar_paths = glob.glob(os.path.join(self.base_path, 'velodyne/*')
+            self.list_label_paths = glob.glob(os.path.join(self.base_path, 'label_2/*')
+            self.list_calib_paths = glob.glob(os.path.join(self.base_path, 'calib/*')
 
         return self.__data_generator(self.base_path, 
                                     image_size=self.params['image_size'],

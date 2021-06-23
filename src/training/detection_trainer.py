@@ -126,29 +126,13 @@ class BEVDetectionTrainer(DetectionTrainer):
 class FusionDetectionTrainer(DetectionTrainer):
     
     def _set_params(self):
-        self.branch_params = {
-            'opt': self.model.train_op_fusion,
-            'train_fusion_rgb': True,
-            'lr': 1e-5,
-            'step_size': 2 * 3682,
-            'learning_rate': 1e-6,
-            'max_lr': 1e-4,
-            'use_clr': False
-        }
+        pass
 
 
 class EndToEndDetectionTrainer(DetectionTrainer):
     
     def _set_params(self):
-        self.branch_params = {
-            'opt': self.model.train_op,
-            'train_fusion_rgb': True,
-            'lr': 5e-4,
-            'step_size': 2 * 3682,
-            'learning_rate': 1e-6,
-            'max_lr': 1e-4,
-            'use_clr': False
-        }
+        pass
 
 
 
