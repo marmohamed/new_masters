@@ -25,38 +25,34 @@ num_summary_images_detection=5
 
 train_kitti=false
 train_city=false
-train_bev=false
+train_bev=true
 train_fusion=false
-train_end_to_end=true
+train_end_to_end=false
 train_bev_lr_find=false
 
 
 
 if [ "$train_city" = true ]; then
     python Main.py --data_path $data_path \
-                --train_images_seg True \
-                --restore False \
+                --train_images_seg \
                 --epochs_img_head $epochs_img_head_city \
                 --epochs_img_all $epochs_img_all_city \
                 --batch_size 1 \
-                --segmentation_kitti False \
-                --segmentation_cityscapes True \
+                --segmentation_cityscapes \
                 --num_summary_images $num_summary_images_segmentation \
                 --start_epoch 0 
 fi
 
 if [ "$train_kitti" = true ]; then
     python Main.py --data_path $data_path \
-                --train_images_seg True \
-                --restore True \
+                --train_images_seg \
+                --restore \
                 --epochs_img_head $epochs_img_head_kitti \
                 --epochs_img_all $epochs_img_all_kitti \
                 --batch_size 1 \
-                --segmentation_kitti True \
-                --segmentation_cityscapes False \
+                --segmentation_kitti \
+                --segmentation_cityscapes  \
                 --num_summary_images $num_summary_images_segmentation \
-                --train_fusion False \
-                --train_bev False 
 fi
 
 
@@ -64,15 +60,11 @@ fi
 if [ "$train_bev" = true ]; then
 
     python Main.py --data_path $data_path \
-                --train_bev True \
-                --restore False \
+                --train_bev  \
                 --epochs $epochs_bev \
                 --start_epoch $start_epoch_bev \
                 --num_summary_images $num_summary_images_detection \
                 --batch_size 2 \
-                --train_fusion False \
-                --train_images_seg False \
-                --augment True
 
     # python write_prediction_in_files.py 
   
@@ -82,16 +74,11 @@ fi
 if [ "$train_bev_lr_find" = true ]; then
 
     python Main.py --data_path $data_path \
-                --train_bev False \
-                --train_bev_lr_find True \
-                --restore False \
+                --train_bev_lr_find \
                 --epochs $epochs_bev \
                 --start_epoch $start_epoch_bev \
                 --num_summary_images $num_summary_images_detection \
                 --batch_size 1 \
-                --train_fusion False \
-                --train_images_seg False \
-                --augment True
 
     # python write_prediction_in_files.py 
   
@@ -99,30 +86,21 @@ fi
 
 if [ "$train_fusion" = true ]; then
     python Main.py --data_path $data_path \
-                --train_fusion True \
-                --restore True \
+                --train_fusion \
                 --epochs $epochs_fusion \
                 --start_epoch $start_epoch_fusion \
                 --num_summary_images $num_summary_images_detection \
                 --batch_size 1 \
-                --train_bev False \
-                --train_images_seg False \
-                --augment False
 
 fi
 
 
 if [ "$train_end_to_end" = true ]; then
     python Main.py --data_path $data_path \
-                --train_end_to_end True \
-                --restore False \
+                --train_end_to_end \
                 --epochs $epochs_end \
                 --start_epoch $start_epoch_end \
                 --num_summary_images $num_summary_images_detection \
                 --batch_size 1 \
-                --train_bev False \
-                --train_fusion False \
-                --train_images_seg False \
-                --augment False
 
 fi

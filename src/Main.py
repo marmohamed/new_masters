@@ -1,17 +1,21 @@
-from model import *
+
 from Trainer import *
 import argparse
 
 def main(args):
     print('Building the model')
+    if args.train_fusion or args.train_end_to_end:
+        from model_fusion import *
+        params = {
+            'fusion': True
+        }
+    else args.train_bev:
+        from model import *
+        params = {
+            'fusion': False
+        }
 
-    params = {
-        'fusion': True,
-        # 'train_loc': 1,
-        # 'train_dim': 0,
-        # 'train_theta': 0,
-        # 'train_dir': 0
-    }
+    
     model = Model(graph=None, **params)
 
     print('Training')
@@ -20,25 +24,7 @@ def main(args):
 
     if args.num_samples is not None:
         args.num_samples = int(args.num_samples)
-    if args.restore in ['True', 'true']:
-        args.restore = True
-    else:
-        args.restore = False
 
-    if args.augment in ['True', 'true']:
-        args.augment = True
-    else:
-        args.augment = False
-
-    if args.segmentation_kitti in ['True', 'true']:
-        args.segmentation_kitti = True
-    else:
-        args.segmentation_kitti = False
-
-    if args.segmentation_cityscapes in ['True', 'true']:
-        args.segmentation_cityscapes = True
-    else:
-        args.segmentation_cityscapes = False
 
     params = {
         'batch_size': int(args.batch_size), 
@@ -90,23 +76,23 @@ if __name__ == '__main__':
     parser.add_argument('--num_samples', default=None, help='num samples')
     parser.add_argument('--random_seed', default=0, help='random seed')
     parser.add_argument('--save_steps', default=100, help='save steps')
-    parser.add_argument('--restore', default=False, help='restore')
+    parser.add_argument('--restore', default=False, help='restore', action='store_true')
     parser.add_argument('--training_per', default=0.5)
     parser.add_argument('--num_summary_images', default=4)
     parser.add_argument('--start_epoch', default=0)
     parser.add_argument('--augment', default=True)
-    parser.add_argument('--train_bev_lr_find', default=False)
+    parser.add_argument('--train_bev_lr_find', default=False, action='store_true')
     
-    parser.add_argument('--train_end_to_end', default=False)
+    parser.add_argument('--train_end_to_end', default=False, action='store_true')
 
-    parser.add_argument('--segmentation_kitti', default=False)
-    parser.add_argument('--segmentation_cityscapes', default=True)
+    parser.add_argument('--segmentation_kitti', default=False, action='store_true')
+    parser.add_argument('--segmentation_cityscapes', default=False, action='store_true')
 
     parser.add_argument('--data_path', default='/Users/apple/Desktop/Master/Data', help='Data path')
     
-    parser.add_argument('--train_bev', default=False, help='train bev')
-    parser.add_argument('--train_images_seg', default=False, help='train image header - segmentation')
-    parser.add_argument('--train_fusion', default=False, help='train fusion')
+    parser.add_argument('--train_bev', default=False, help='train bev', action='store_true')
+    parser.add_argument('--train_images_seg', default=False, help='train image header - segmentation', action='store_true')
+    parser.add_argument('--train_fusion', default=False, help='train fusion', action='store_true')
     
     args = parser.parse_args()
 
