@@ -71,7 +71,7 @@ class Calibration(object):
         '''
         data = {}
         with open(filepath, 'r') as f:
-            for line in f.encode('utf-8').strip().readlines():
+            for line in f.readlines():
                 line = line.rstrip()
                 if len(line)==0: continue
                 key, value = line.split(':', 1)
