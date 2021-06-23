@@ -75,8 +75,8 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
             label_path = self.list_label_paths[indx]
             lidar_path = self.list_calib_paths[indx]
 
-            rot, tr, sc, image_translate_x, image_translate_y, image_translate_z, ang, fliplr = self.get_augmentation_parameters()
-                    
+            rot, tr, sc, image_translate_x, image_translate_y, ang, fliplr = self.get_augmentation_parameters()
+            image_translate_z = 0
             data_reader_obj = DataReader(camera_path, calib_path, label_path, lidar_path, rot, sc, tr, ang, image_translate_x, image_translate_y, image_translate_z, fliplr=fliplr)
 
             camera_image = data_reader_obj.read_image()
