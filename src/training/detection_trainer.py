@@ -90,7 +90,7 @@ class DetectionTrainer(Trainer):
 
         self.eval_dataset = DetectionDatasetLoader(self.data_base_path, batch_size=2, training=False)
 
-        self.model.model.fit(self.dataset, epochs=epochs)
+        self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=7481//2)
 
 
    
