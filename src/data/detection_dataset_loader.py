@@ -32,8 +32,6 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
         self.training = training
         self.augment = self.training
 
-        print(self.batch_size)
-
         if self.training:
             base = 'training'
         else:
@@ -95,7 +93,7 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
             labels[i, :, :, :, :] = label
                      
                     # yield(camera_image, lidar_image, label)
-        yield lidar_images, labels
+        return lidar_images, labels
 
 
 
