@@ -89,7 +89,7 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
                     #         camera_image = self.apply_mask(camera_image)
 
             _, label, truncated, occlusion = data_reader_obj.label_reader.read_label()
-            label = get_target(label, truncated, occlusion, anchors=anchors)
+            label = get_target(label, truncated, occlusion, anchors=self.defaults['anchors'])
 
             lidar_images[i, :, :, :] = lidar_image
             labels[i, :, :, :, :] = label
