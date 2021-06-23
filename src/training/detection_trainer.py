@@ -94,22 +94,11 @@ class DetectionTrainer(Trainer):
 
        
         with self.model.graph.as_default():
-                
-                config = tf.ConfigProto()
-                config.gpu_options.allow_growth = True
+                ptions.allow_growth = True
 
                 np.random.seed(random_seed)
                 tf.set_random_seed(random_seed)
-
-                with tf.Session(config=config) as sess:
-                    if restore:
-                        self.model.saver.restore(sess, tf.train.latest_checkpoint('./training_files/tmp/'))
-                    else:
-                        sess.run(tf.global_variables_initializer())
-
-                    counter = 0
-
-                    self.model.fit(self.dataset, epochs=epochs)
+                self.model.fit(self.dataset, epochs=epochs)
 
 
    

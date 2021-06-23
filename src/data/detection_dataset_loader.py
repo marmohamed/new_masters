@@ -32,10 +32,10 @@ class DetectionDatasetLoader(DatasetLoader):
     def _init_generator(self, random_split = False):
         
 
-            self.list_camera_paths = glob.glob(os.path.join(self.base_path, 'image_2/*'))
-            self.list_lidar_paths  = glob.glob(os.path.join(self.base_path, 'velodyne/*'))
-            self.list_label_paths  = glob.glob(os.path.join(self.base_path, 'label_2/*'))
-            self.list_calib_paths  = glob.glob(os.path.join(self.base_path, 'calib/*'))
+        self.list_camera_paths = glob.glob(os.path.join(self.base_path, 'image_2/*'))
+        self.list_lidar_paths  = glob.glob(os.path.join(self.base_path, 'velodyne/*'))
+        self.list_label_paths  = glob.glob(os.path.join(self.base_path, 'label_2/*'))
+        self.list_calib_paths  = glob.glob(os.path.join(self.base_path, 'calib/*'))
 
         return self.__data_generator(self.base_path, 
                                     image_size=self.params['image_size'],
