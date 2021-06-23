@@ -32,6 +32,8 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
         self.training = training
         self.augment = self.training
 
+        print(self.batch_size)
+
         if self.training:
             base = 'training'
         else:
@@ -67,15 +69,13 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
         lidar_images = np.zeros((len(indexes), self.defaults['lidar_size'][0], self.defaults['lidar_size'][1], self.defaults['lidar_size'][2]))
         labels = np.zeros((len(indexes), 112, 128, 2, 13))
 
-        for i in range(len(self.indexes)):
-            indx = self.indexes[i]
+        for i in range(len(indexes)):
+            indx = indexes[i]
 
             camera_path = self.list_camera_paths[indx]
             calib_path = self.list_calib_paths[indx]
             label_path = self.list_label_paths[indx]
             lidar_path = self.list_lidar_paths[indx]
-
-            print(camera_path)
 
             rot, tr, sc, image_translate_x, image_translate_y, ang, fliplr = self.get_augmentation_parameters()
             image_translate_z = 0
