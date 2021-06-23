@@ -86,10 +86,9 @@ class DetectionTrainer(Trainer):
                     augment=True,
                     **kwargs):
 
-        if self.dataset is None:
-            self.dataset = DetectionDatasetLoader(self.data_base_path, num_samples, training_per, random_seed, training, True)
+        self.dataset = DetectionDatasetLoader(self.data_base_path, batch_size=2, training=True)
 
-        self.eval_dataset = DetectionDatasetLoader(self.data_base_path, num_samples, training_per, random_seed, False, False)
+        self.eval_dataset = DetectionDatasetLoader(self.data_base_path, batch_size=2, training=False)
 
         self.model.model.fit(self.dataset, epochs=epochs)
 

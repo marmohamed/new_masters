@@ -17,7 +17,7 @@ from scipy.spatial.transform import Rotation as R
 
 class DetectionDatasetLoader(tf.keras.utils.Sequence):
 
-    def __init__(self, batch_size=2, training=True, **kwargs):
+    def __init__(self, base_path, batch_size=2, training=True, **kwargs):
         self.defaults = {
             'image_size': (370, 1224),
             'lidar_size': (448, 512, 40), 
@@ -27,6 +27,7 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
             if k in defaults:
                 self.defaults[k] = kwargs[k]
 
+        self.base_path = base_path
         self.batch_size = batch_size
         self.training = training
         self.augment = self.training
