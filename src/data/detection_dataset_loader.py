@@ -32,10 +32,15 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
         self.training = training
         self.augment = self.training
 
-        self.list_camera_paths = glob.glob(os.path.join(self.base_path, 'image_2/*'))
-        self.list_lidar_paths  = glob.glob(os.path.join(self.base_path, 'velodyne/*'))
-        self.list_label_paths  = glob.glob(os.path.join(self.base_path, 'label_2/*'))
-        self.list_calib_paths  = glob.glob(os.path.join(self.base_path, 'calib/*'))
+        if self.training:
+            base = 'training'
+        else:
+            base = 'validation'
+
+        self.list_camera_paths = glob.glob(os.path.join(self.base_path, base, 'image_2/*'))
+        self.list_lidar_paths  = glob.glob(os.path.join(self.base_path, base, 'velodyne/*'))
+        self.list_label_paths  = glob.glob(os.path.join(self.base_path, base, 'label_2/*'))
+        self.list_calib_paths  = glob.glob(os.path.join(self.base_path, base, 'calib/*'))
 
         self.indexes = np.arange(len(self.list_lidar_paths))
         
