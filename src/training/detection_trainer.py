@@ -91,14 +91,7 @@ class DetectionTrainer(Trainer):
 
         self.eval_dataset = DetectionDatasetLoader(self.data_base_path, num_samples, training_per, random_seed, False, False)
 
-
-       
-        with self.model.graph.as_default():
-                ptions.allow_growth = True
-
-                np.random.seed(random_seed)
-                tf.set_random_seed(random_seed)
-                self.model.fit(self.dataset, epochs=epochs)
+        self.model.model.fit(self.dataset, epochs=epochs)
 
 
    
