@@ -32,53 +32,10 @@ class DetectionDatasetLoader(DatasetLoader):
     def _init_generator(self, random_split = False):
         
 
-        if random_split:
-
-            list_files = list(map(lambda x: x.split('.')[0], os.listdir(self.base_path+'/data_object_image_3/training/image_3')))
-            random.seed(self.random_seed)
-            random.shuffle(list_files)
-
-            camera_paths = list(map(lambda x: self.base_path+'/data_object_image_3/training/image_3/' + x + '.png', list_files))
-            lidar_paths = list(map(lambda x: self.base_path+'/data_object_velodyne/training/velodyne/' + x + '.bin', list_files))
-            label_paths = list(map(lambda x: self.base_path + '/data_object_label_2/training/label_2/' + x + '.txt', list_files))
-            calib_paths = list(map(lambda x: self.base_path + '/data_object_calib/training/calib/' + x + '.txt', list_files))
-            
-            if self.num_samples is None:
-                ln = int(len(list_files) * self.training_per)
-                final_sample = len(list_files)
-            else:
-                ln = int(self.num_samples * self.training_per)
-                final_sample = self.num_samples
-
-            if self.training:
-                self.list_camera_paths = camera_paths[:ln]
-                self.list_lidar_paths = lidar_paths[:ln]
-                self.list_label_paths = label_paths[:ln]
-                self.list_calib_paths = calib_paths[:ln]
-            else:
-                self.list_camera_paths = camera_paths[ln:final_sample]
-                self.list_lidar_paths = lidar_paths[ln:final_sample]
-                self.list_label_paths = label_paths[ln:final_sample]
-                self.list_calib_paths = calib_paths[ln:final_sample]
-        else:
-            if self.training:
-                file_name = '/train.txt'
-            else:
-                file_name = '/val.txt'
-            with open(self.base_path + file_name, 'r') as f:
-                list_file_nums = f.readlines()
-            list_files = [ l.strip() for l in list_file_nums]
-
-            if self.num_samples is None:
-                ln = int(len(list_files))
-            else:
-                ln = int(self.num_samples)
-
-
-            self.list_camera_paths = glob.glob(os.path.join(self.base_path, 'image_2/*')
-            self.list_lidar_paths = glob.glob(os.path.join(self.base_path, 'velodyne/*')
-            self.list_label_paths = glob.glob(os.path.join(self.base_path, 'label_2/*')
-            self.list_calib_paths = glob.glob(os.path.join(self.base_path, 'calib/*')
+            self.list_camera_paths = glob.glob(os.path.join(self.base_path, 'image_2/*'))
+            self.list_lidar_paths  = glob.glob(os.path.join(self.base_path, 'velodyne/*'))
+            self.list_label_paths  = glob.glob(os.path.join(self.base_path, 'label_2/*'))
+            self.list_calib_paths  = glob.glob(os.path.join(self.base_path, 'calib/*'))
 
         return self.__data_generator(self.base_path, 
                                     image_size=self.params['image_size'],
