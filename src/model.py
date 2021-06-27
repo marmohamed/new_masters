@@ -83,14 +83,13 @@ class Model(object):
                 self.cnn_lidar.res_groups2 = self.cnn_lidar.res_groups
 
 
-                fpn_lidar = FPN(self.cnn_lidar.res_groups2, scope="fpn_lidar")
-                fpn_lidar[0] = maxpool2d(fpn_lidar[0], scope="fpn_lidar_maxpool_0")
-                        # fpn_lidar[-1] = upsample(fpn_lidar[-1], scope="fpn_lidar_upsample_0", filters=128, use_deconv=True, kernel_size=4)
+                # fpn_lidar = FPN(self.cnn_lidar.res_groups2, scope="fpn_lidar")
+                # fpn_lidar[0] = maxpool2d(fpn_lidar[0], scope="fpn_lidar_maxpool_0")
+                #         # fpn_lidar[-1] = upsample(fpn_lidar[-1], scope="fpn_lidar_upsample_0", filters=128, use_deconv=True, kernel_size=4)
 
-                fpn_lidar = tf.concat(fpn_lidar, axis=-1)
+                # fpn_lidar = tf.concat(fpn_lidar, axis=-1)
 
-                fpn_lidar1 = fpn_lidar[:]
-                        # fpn_lidar2 = fpn_lidar[:]
+                fpn_lidar1 = self.cnn_lidar.res_groups2[-1]
 
                 num_conv_blocks=4
                 for i in range(0, num_conv_blocks):
@@ -126,75 +125,29 @@ class Model(object):
 
                 self.debug_layers['final_layer'] = self.final_output
 
-
-                # self.loc_weight = tf.Variable(1., name='loc_weight', shape=(),  dtype=tf.float32)
-                # self.dim_weight = tf.Variable(1., name='dim_weight', shape=(),  dtype=tf.float32)
-                # self.theta_weight = tf.Variable(1., name='theta_weight', shape=(), dtype=tf.float32)
-                # self.cls_weight = tf.Variable(1., name='cls_weight', shape=(),  dtype=tf.float32)
-                        
-
-                cls_loss_instance = ClsLoss('classification_loss')
-                reg_loss_instance = RegLoss('regression_loss')
-                loss_calculator = LossCalculator()
-                loss_params = {'focal_loss': self.params['focal_loss'], 'weight': self.params['weight_loss'], 'mse': self.params['mse_loss']}
-                self.classification_loss, self.loc_reg_loss, self.dim_reg_loss,\
-                                    self.theta_reg_loss, self.dir_reg_loss = loss_calculator(
-                                                            self.y_true,
-                                                            self.final_output, 
-                                                            cls_loss_instance, 
-                                                            reg_loss_instance,
-                                                            **loss_params)
-
-                # self.weight_cls = tf.keras.layers.Input(dtype=tf.float32, shape=())
-                # self.weight_dim = tf.keras.layers.Input(dtype=tf.float32, shape=())
-                # self.weight_loc = tf.keras.layers.Input(dtype=tf.float32, shape=())
-                # self.weight_theta = tf.keras.layers.Input(dtype=tf.float32, shape=())
-                # self.weight_dir = tf.keras.layers.Input(dtype=tf.float32, shape=())
-
-
-                self.regression_loss_bev = 0
-                # if self.params['train_loc'] == 1:
-                self.regression_loss_bev += 10 * self.loc_reg_loss 
-                # if self.params['train_dim'] == 1:
-                self.regression_loss_bev += 10* self.dim_reg_loss 
-                # if self.params['train_theta'] == 1:
-                self.regression_loss_bev += 5 * self.theta_reg_loss 
-
-                        
-                self.model_loss_bev = 0
-
-                self.model_loss_bev +=  1 * self.classification_loss
-
-                self.model_loss_bev +=  1 * self.regression_loss_bev
-
                 def get_loss(truth, predictions):
                     loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)(truth[:, :, :, :, 8], predictions[:, :, :, :, 8])
 
-                    # reg_loss = tf.keras.losses.MeanSquaredError()
-                    # loss_fn = lambda t, p: tf.where(tf.greater_equal(truth[:, :, :, :, 8],0.5), reg_loss(t, p), tf.zeros_like(p))
-                    # # loc_ratios = [5, 5, 1]
-                    # reg_losses1 = [loss_fn(truth[:, :, :, :, i], tf.math.sigmoid(predictions[:, :, :, :, i])-0.5) for i in range(3)] 
-                    # reg_losses2 = [loss_fn(truth[:, :, :, :, i], tf.nn.tanh(predictions[:, :, :, :, i])) for i in range(3, 6)] 
-                    # # reg_losses3 = [loss_fn(truth[:, :, :, :, i] , predictions[:, :, :, :, i]) for i in range(6, 8)]
-                    # reg_losses3 = [loss_fn((truth[:, :, :, :, i] + np.pi/4) / (np.pi/2), tf.math.sigmoid(predictions[:, :, :, :, i])) for i in range(6, 7)]
-                    # loss_fn = lambda t, p: tf.where(tf.greater_equal(truth[:, :, :, :, 8],0.5), tf.nn.sigmoid_cross_entropy_with_logits(labels=t, logits=p), tf.zeros_like(p))
-                    # reg_losses4 = [loss_fn(truth[:, :, :, :, i], predictions[:, :, :, :, i]) for i in range(7, 8)]
+                    reg_loss = tf.keras.losses.MeanSquaredError()
+                    loss_fn = lambda t, p: tf.where(tf.greater_equal(truth[:, :, :, :, 8],0.5), reg_loss(t, p), tf.zeros_like(p))
+                    # loc_ratios = [5, 5, 1]
+                    reg_losses1 = [loss_fn(truth[:, :, :, :, i], tf.math.sigmoid(predictions[:, :, :, :, i])-0.5) for i in range(3)] 
+                    reg_losses2 = [loss_fn(truth[:, :, :, :, i], tf.nn.tanh(predictions[:, :, :, :, i])) for i in range(3, 6)] 
+                    # reg_losses3 = [loss_fn(truth[:, :, :, :, i] , predictions[:, :, :, :, i]) for i in range(6, 8)]
+                    reg_losses3 = [loss_fn((truth[:, :, :, :, i] + np.pi/4) / (np.pi/2), tf.math.sigmoid(predictions[:, :, :, :, i])) for i in range(6, 7)]
+                    loss_fn = lambda t, p: tf.where(tf.greater_equal(truth[:, :, :, :, 8],0.5), tf.nn.sigmoid_cross_entropy_with_logits(labels=t, logits=p), tf.zeros_like(p))
+                    reg_losses4 = [loss_fn(truth[:, :, :, :, i], predictions[:, :, :, :, i]) for i in range(7, 8)]
 
-                    # c = (tf.math.count_nonzero(truth[:, :, :, :, 8], dtype=tf.float32)+1e-8)
+                    c = (tf.math.count_nonzero(truth[:, :, :, :, 8], dtype=tf.float32)+1e-8)
 
-                    # loc_reg_loss = tf.reduce_sum(reg_losses1)  / c
-                    # dim_reg_loss = tf.reduce_sum(reg_losses2) / c
-                    # theta_reg_loss = tf.reduce_sum(reg_losses3) / c
-                    # dir_reg_loss = tf.reduce_sum(reg_losses4) / c
+                    loc_reg_loss = tf.reduce_sum(reg_losses1)  / c
+                    dim_reg_loss = tf.reduce_sum(reg_losses2) / c
+                    theta_reg_loss = tf.reduce_sum(reg_losses3) / c
+                    dir_reg_loss = tf.reduce_sum(reg_losses4) / c
 
-                    # loss += loc_reg_loss + dim_reg_loss + theta_reg_loss + dir_reg_loss
+                    loss += loc_reg_loss + dim_reg_loss + theta_reg_loss + dir_reg_loss
                     return loss
 
-                # self.model_loss_bev += 5 * (self.weight_loc + self.weight_dim)  * self.corners_loss
-                # self.model_loss_bev += self.weight_dir * self.dir_reg_loss
-                # self.model_loss_bev += 0.5 * self.oclussion_loss
-
-                # self.regression_loss = self.regression_loss_bev
                 self.model_loss = get_loss
 
                      
@@ -203,50 +156,4 @@ class Model(object):
                 self.model = tf.keras.models.Model(inputs=[self.train_inputs_lidar], outputs=[self.final_output])
                 self.model.compile(optimizer=self.opt_lidar, loss=self.model_loss)
 
-                # self.saver = tf.train.Saver(max_to_keep=1)
-
-                # self.best_saver = tf.train.Saver(max_to_keep=1)
-
-                # # self.lr_summary = tf.summary.scalar('learning_rate', tf.squeeze(self.decay_rate))
-                # self.model_loss_batches_summary = tf.summary.scalar('model_loss_batches', self.model_loss)
-                # self.cls_loss_batches_summary = tf.summary.scalar('classification_loss_batches', self.classification_loss)
-                # self.reg_loss_batches_summary = tf.summary.scalar('regression_loss_batches', self.regression_loss)
-                # self.loc_reg_loss_batches_summary = tf.summary.scalar('loc_regression_loss_batches', self.loc_reg_loss)
-                # self.dim_reg_loss_batches_summary = tf.summary.scalar('dim_regression_loss_batches', self.dim_reg_loss)
-                # self.theta_reg_loss_batches_summary = tf.summary.scalar('theta_regression_loss_batches', self.theta_reg_loss)
-                # self.dir_reg_loss_batches_summary = tf.summary.scalar('dir_regression_loss_batches', self.dir_reg_loss)
-                # self.corners_loss_batches_summary = tf.summary.scalar('corners_regression_loss_batches', self.corners_loss)
-                # self.occlusion_loss_batches_summary = tf.summary.scalar('occlusion_regression_loss_batches', self.oclussion_loss)
-
-                # self.precision_summary = tf.summary.scalar('precision_batches', self.precision)
-                # self.recall_summary = tf.summary.scalar('recall_batches', self.recall)
-
-                # self.iou_summary = tf.summary.scalar('iou_batches', self.iou)
-                # self.iou_2d_summary = tf.summary.scalar('iou_2d_batches', self.iou_2d)
-                # self.iou_loc_summary = tf.summary.scalar('iou_loc_batches', self.iou_loc)
-                # self.iou_dim_summary = tf.summary.scalar('iou_dim_batches', self.iou_dim)
-                # self.theta_accuracy_summary = tf.summary.scalar('theta_accuracy_batches', self.theta_accuracy)
-
-                # self.cls_weight_summary = tf.summary.scalar('cls_weight_summary', self.weight_cls)
-                # self.loc_weight_summary = tf.summary.scalar('loc_weight_summary', self.weight_loc)
-                # self.dim_weight_summary = tf.summary.scalar('dim_weight_summary', self.weight_dim)
-                # self.theta_weight_summary = tf.summary.scalar('theta_weight_summary', self.weight_theta)
-
-
                
-
-              
-                # self.merged = tf.summary.merge([self.lr_summary, self.model_loss_batches_summary, \
-                #                             self.cls_loss_batches_summary, self.reg_loss_batches_summary,\
-                #                             self.loc_reg_loss_batches_summary, self.dim_reg_loss_batches_summary,\
-                #                             self.theta_reg_loss_batches_summary,\
-                #                             self.precision_summary, self.recall_summary,\
-                #                             self.iou_summary, self.iou_2d_summary, self.iou_loc_summary, self.iou_dim_summary,\
-                #                             self.theta_accuracy_summary,\
-                #                             self.cls_weight_summary, self.loc_weight_summary, self.dim_weight_summary,self.theta_weight_summary,\
-                #                             self.dir_reg_loss_batches_summary, self.corners_loss_batches_summary,\
-                #                             self.occlusion_loss_batches_summary
-                #                             ])
-
-
-
