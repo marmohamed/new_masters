@@ -19,8 +19,8 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
 
     def __init__(self, base_path, batch_size=2, fusion=False, training=True, **kwargs):
         self.defaults = {
-            'image_size': (370, 1224),
-            'lidar_size': (448, 512, 36), 
+            'image_size': (370, 1224, 3),
+            'lidar_size': (448, 512, 35), 
             'anchors': np.array([3.9, 1.6, 1.5])
         }
         for k in kwargs:
@@ -66,6 +66,7 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
     def __data_generation(self, indexes):
 
         lidar_images = np.zeros((len(indexes), self.defaults['lidar_size'][0], self.defaults['lidar_size'][1], self.defaults['lidar_size'][2]))
+        camera_images = np.zeros((len(indexes), self.defaults['image_size'][0], self.defaults['image_size'][1], self.defaults['image_size'][2]))
         labels = np.zeros((len(indexes), 112, 128, 2, 13))
 
         for i in range(len(indexes)):
@@ -90,12 +91,13 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
             _, label, truncated, occlusion = data_reader_obj.label_reader.read_label()
             label = get_target(label, truncated, occlusion, anchors=self.defaults['anchors'])
 
+            camera_images[i, :, :, :] = camera_image
             lidar_images[i, :, :, :] = lidar_image
             labels[i, :, :, :, :] = label
                      
                     # yield(camera_image, lidar_image, label)
         if self.fusion:
-            return (lidar_images, camera_image), labels
+            return (lidar_images, camera_images), labels
         else:
             return lidar_images, labels
 

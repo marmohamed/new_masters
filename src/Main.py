@@ -41,7 +41,7 @@ def main(args):
         'num_summary_images': int(args.num_summary_images),
         'start_epoch': int(args.start_epoch),
         'augment': args.augment,
-        'fusion': args.train_fusion
+        'train_fusion': args.train_fusion
     }
 
     if args.train_bev:
