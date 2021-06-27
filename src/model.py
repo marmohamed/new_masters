@@ -127,10 +127,10 @@ class Model(object):
                 self.debug_layers['final_layer'] = self.final_output
 
 
-                self.loc_weight = tf.Variable(1., name='loc_weight', shape=(),  dtype=tf.float32)
-                self.dim_weight = tf.Variable(1., name='dim_weight', shape=(),  dtype=tf.float32)
-                self.theta_weight = tf.Variable(1., name='theta_weight', shape=(), dtype=tf.float32)
-                self.cls_weight = tf.Variable(1., name='cls_weight', shape=(),  dtype=tf.float32)
+                # self.loc_weight = tf.Variable(1., name='loc_weight', shape=(),  dtype=tf.float32)
+                # self.dim_weight = tf.Variable(1., name='dim_weight', shape=(),  dtype=tf.float32)
+                # self.theta_weight = tf.Variable(1., name='theta_weight', shape=(), dtype=tf.float32)
+                # self.cls_weight = tf.Variable(1., name='cls_weight', shape=(),  dtype=tf.float32)
                         
 
                 cls_loss_instance = ClsLoss('classification_loss')
@@ -145,11 +145,11 @@ class Model(object):
                                                             reg_loss_instance,
                                                             **loss_params)
 
-                self.weight_cls = tf.keras.layers.Input(dtype=tf.float32, shape=())
-                self.weight_dim = tf.keras.layers.Input(dtype=tf.float32, shape=())
-                self.weight_loc = tf.keras.layers.Input(dtype=tf.float32, shape=())
-                self.weight_theta = tf.keras.layers.Input(dtype=tf.float32, shape=())
-                self.weight_dir = tf.keras.layers.Input(dtype=tf.float32, shape=())
+                # self.weight_cls = tf.keras.layers.Input(dtype=tf.float32, shape=())
+                # self.weight_dim = tf.keras.layers.Input(dtype=tf.float32, shape=())
+                # self.weight_loc = tf.keras.layers.Input(dtype=tf.float32, shape=())
+                # self.weight_theta = tf.keras.layers.Input(dtype=tf.float32, shape=())
+                # self.weight_dir = tf.keras.layers.Input(dtype=tf.float32, shape=())
 
 
                 self.regression_loss_bev = 0
