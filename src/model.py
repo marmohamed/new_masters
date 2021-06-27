@@ -1,7 +1,6 @@
 import tensorflow as tf
 import argparse
 import numpy as np
-from tensorflow.python import debug as tf_debug
 import os
 
 from utils.constants import *
@@ -25,7 +24,6 @@ class Model(object):
 
     def __init__(self, graph=None, **params):
         self.CONST = Const()
-        self.graph = graph
         self.params = self.__prepare_parameters(**params)
         self.__build_model()
 
@@ -39,16 +37,9 @@ class Model(object):
             'decay_steps': 5000,
             'decay_rate': 0.9,
             'staircase': False,
-            'train_cls': True,
-            'train_reg': True,
-            'fusion': True,
             'mse_loss': False,
             'res_blocks': 0,
             'res_blocks_image': 1,
-            'train_loc': 1,
-            'train_dim': 1,
-            'train_theta': 1,
-            'train_dir': 1
         }
         for k in params:
             if k in defaults:
@@ -58,12 +49,6 @@ class Model(object):
 
     def __build_model(self):
 
-        self.debug_layers = {}
-
-        if self.graph is None:
-            self.graph = tf.Graph()
-
-        with self.graph.as_default():
 
                 img_size_1 = 448
                 img_size_2 = 512
