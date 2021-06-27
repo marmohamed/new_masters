@@ -20,7 +20,7 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
     def __init__(self, base_path, batch_size=2, fusion=False, training=True, **kwargs):
         self.defaults = {
             'image_size': (370, 1224, 3),
-            'lidar_size': (448, 512, 35), 
+            'lidar_size': (448, 512, 36), 
             'anchors': np.array([3.9, 1.6, 1.5])
         }
         for k in kwargs:

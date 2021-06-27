@@ -60,7 +60,7 @@ class Model(object):
 
                 img_size_1 = 448
                 img_size_2 = 512
-                c_dim = 35
+                c_dim = 36
                 self.train_inputs_lidar = tf.keras.layers.Input(
                                     dtype=tf.float32,
                                     shape=[img_size_1, img_size_2, c_dim], 
