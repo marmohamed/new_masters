@@ -170,24 +170,24 @@ class Model(object):
                 def get_loss(truth, predictions):
                     loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)(truth[:, :, :, :, 8], predictions[:, :, :, :, 8])
 
-                    reg_loss = tf.keras.losses.MeanSquaredError()
-                    loss_fn = lambda t, p: tf.where(tf.greater_equal(truth[:, :, :, :, 8],0.5), reg_loss(t, p), tf.zeros_like(p))
-                    # loc_ratios = [5, 5, 1]
-                    reg_losses1 = [loss_fn(truth[:, :, :, :, i], tf.math.sigmoid(predictions[:, :, :, :, i])-0.5) for i in range(3)] 
-                    reg_losses2 = [loss_fn(truth[:, :, :, :, i], tf.nn.tanh(predictions[:, :, :, :, i])) for i in range(3, 6)] 
-                    # reg_losses3 = [loss_fn(truth[:, :, :, :, i] , predictions[:, :, :, :, i]) for i in range(6, 8)]
-                    reg_losses3 = [loss_fn((truth[:, :, :, :, i] + np.pi/4) / (np.pi/2), tf.math.sigmoid(predictions[:, :, :, :, i])) for i in range(6, 7)]
-                    loss_fn = lambda t, p: tf.where(tf.greater_equal(truth[:, :, :, :, 8],0.5), tf.nn.sigmoid_cross_entropy_with_logits(labels=t, logits=p), tf.zeros_like(p))
-                    reg_losses4 = [loss_fn(truth[:, :, :, :, i], predictions[:, :, :, :, i]) for i in range(7, 8)]
+                    # reg_loss = tf.keras.losses.MeanSquaredError()
+                    # loss_fn = lambda t, p: tf.where(tf.greater_equal(truth[:, :, :, :, 8],0.5), reg_loss(t, p), tf.zeros_like(p))
+                    # # loc_ratios = [5, 5, 1]
+                    # reg_losses1 = [loss_fn(truth[:, :, :, :, i], tf.math.sigmoid(predictions[:, :, :, :, i])-0.5) for i in range(3)] 
+                    # reg_losses2 = [loss_fn(truth[:, :, :, :, i], tf.nn.tanh(predictions[:, :, :, :, i])) for i in range(3, 6)] 
+                    # # reg_losses3 = [loss_fn(truth[:, :, :, :, i] , predictions[:, :, :, :, i]) for i in range(6, 8)]
+                    # reg_losses3 = [loss_fn((truth[:, :, :, :, i] + np.pi/4) / (np.pi/2), tf.math.sigmoid(predictions[:, :, :, :, i])) for i in range(6, 7)]
+                    # loss_fn = lambda t, p: tf.where(tf.greater_equal(truth[:, :, :, :, 8],0.5), tf.nn.sigmoid_cross_entropy_with_logits(labels=t, logits=p), tf.zeros_like(p))
+                    # reg_losses4 = [loss_fn(truth[:, :, :, :, i], predictions[:, :, :, :, i]) for i in range(7, 8)]
 
-                    c = (tf.math.count_nonzero(truth[:, :, :, :, 8], dtype=tf.float32)+1e-8)
+                    # c = (tf.math.count_nonzero(truth[:, :, :, :, 8], dtype=tf.float32)+1e-8)
 
-                    loc_reg_loss = tf.reduce_sum(reg_losses1)  / c
-                    dim_reg_loss = tf.reduce_sum(reg_losses2) / c
-                    theta_reg_loss = tf.reduce_sum(reg_losses3) / c
-                    dir_reg_loss = tf.reduce_sum(reg_losses4) / c
+                    # loc_reg_loss = tf.reduce_sum(reg_losses1)  / c
+                    # dim_reg_loss = tf.reduce_sum(reg_losses2) / c
+                    # theta_reg_loss = tf.reduce_sum(reg_losses3) / c
+                    # dir_reg_loss = tf.reduce_sum(reg_losses4) / c
 
-                    loss += loc_reg_loss + dim_reg_loss + theta_reg_loss + dir_reg_loss
+                    # loss += loc_reg_loss + dim_reg_loss + theta_reg_loss + dir_reg_loss
                     return loss
 
                 # self.model_loss_bev += 5 * (self.weight_loc + self.weight_dim)  * self.corners_loss
