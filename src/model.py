@@ -81,7 +81,6 @@ class Model(object):
                     fpn_lidar1 = conv(fpn_lidar1, 96, kernel=3, stride=1, padding='SAME', use_bias=True, scope='conv_post_fpn_11_'+str(i))
                     fpn_lidar1 = batch_norm(fpn_lidar1, scope='bn_post_fpn_11_' + str(i))
                     fpn_lidar1 = relu(fpn_lidar1)
-                    self.debug_layers['fpn_lidar1_output_post_conv_1_'+str(i)] = fpn_lidar1
 
              
                 if self.params['focal_loss']:
@@ -108,7 +107,6 @@ class Model(object):
                     final_output_1 = conv(fpn_lidar, 9, kernel=1, stride=1, padding='SAME', use_bias=True, scope='conv_out_1')
                     final_output_2 = conv(fpn_lidar, 9, kernel=1, stride=1, padding='SAME', use_bias=True, scope='conv_out_2')
 
-                self.debug_layers['final_layer'] = self.final_output
 
                 def get_loss(truth, predictions):
                     loss = tf.keras.losses.BinaryCrossentropy(from_logits=True)(truth[:, :, :, :, 8], predictions[:, :, :, :, 8])
