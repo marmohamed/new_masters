@@ -86,11 +86,12 @@ class DetectionTrainer(Trainer):
                     augment=True,
                     **kwargs):
 
-        self.dataset = DetectionDatasetLoader(self.data_base_path, batch_size=2, training=True)
+        self.dataset = DetectionDatasetLoader(self.data_base_path, batch_size=batch_size, training=True)
 
         self.eval_dataset = DetectionDatasetLoader(self.data_base_path, batch_size=2, training=False)
 
-        self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=7481//2)
+        self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=7481//batch_size,
+                             validation_data=self.eval_dataset, validation_steps=7481//2)
 
 
    
