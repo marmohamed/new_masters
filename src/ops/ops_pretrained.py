@@ -1,6 +1,8 @@
 import tensorflow as tf
 # import tensorflow.contrib as tf_contrib
 import numpy as np
+import tensorflow_addons as tfa
+
 
 # https://github.com/leonidk/pytorch-tf/blob/master/pytorch-tf.ipynb
 
@@ -76,7 +78,6 @@ def fc(c, **kwargs):
     return x
 
 def fully_conneted_not_trained(x, units, use_bias=True, scope='fully_0'):
-    with tf.variable_scope(scope):
         weight_init = tf.contrib.layers.xavier_initializer()
         # weight_regularizer = tf_contrib.layers.l2_regularizer(0.0001)
         weight_regularizer = None
@@ -104,25 +105,11 @@ def batch_norm(c, is_training=True, **kwargs):
     return group_norm(kwargs['inp'], G=32, eps=1e-5, scope=kwargs['scope'])
 
 def group_norm(x, G=32, eps=1e-5, scope='group_norm') :
-    with tf.variable_scope(scope) :
-        N, H, W, C = x.get_shape().as_list()
-        # print(N, H, W, C)
-        G = min(G, C)
+        x = tfa.layers.GroupNormalization(groups=G, axis=3)(x)
 
-        x = tf.reshape(x, [-1, H, W, G, C // G])
-        mean, var = tf.nn.moments(x, [1, 2, 4], keep_dims=True)
-        x = (x - mean) / tf.sqrt(var + eps)
-
-        gamma = tf.get_variable('gamma', [1, 1, 1, C], initializer=tf.constant_initializer(1.0))
-        beta = tf.get_variable('beta', [1, 1, 1, C], initializer=tf.constant_initializer(0.0))
-
-
-        x = tf.reshape(x, [-1, H, W, C]) * gamma + beta
-
-    return x
+        return x
 
 def resblock(x_init, parameters, bns, is_training=True, scope='resblock', downsample=False) :
-    with tf.variable_scope(scope) :
 
         x = conv2d(parameters[0], inp=x_init)
         x = batch_norm(bns[0], is_training=is_training, inp=x, scope=scope+'_0')
@@ -141,7 +128,6 @@ def resblock(x_init, parameters, bns, is_training=True, scope='resblock', downsa
         return x
 
 def bottle_resblock(x_init, parameters) :
-    with tf.variable_scope(scope) :
         x = batch_norm(inp=x_init)
         shortcut = relu(inp=x)
 

@@ -28,28 +28,11 @@ class ModelTrainer(object):
         self.model = model
         self.data_base_path = data_base_path
 
-        # self.segmentation_trainer = SegmentationTrainer(self.model, self.data_base_path, None)
-        # self.fusion_trainer = FusionDetectionTrainer(self.model, self.data_base_path, None)
+        self.fusion_trainer = FusionDetectionTrainer(self.model, self.data_base_path, None)
         self.bev_trainer = BEVDetectionTrainer(self.model, self.data_base_path, None)
-        # self.end_to_end_trainer = EndToEndDetectionTrainer(self.model, self.data_base_path, None)
-        # self.detection_trainer_lr_find = BEVDetectionTrainerLRFind(self.model, self.data_base_path, None)
 
-    def train_end_to_end(self, **kwargs):
-        d = {'num_summary_images': kwargs['num_summary_images']}
-        self.end_to_end_trainer.train(restore=kwargs['restore'], 
-                    epochs=kwargs['epochs'], 
-                    num_samples=kwargs['num_samples'], 
-                    training_per=kwargs['training_per'], 
-                    random_seed=kwargs['random_seed'], 
-                    training=kwargs['training'], 
-                    batch_size=kwargs['batch_size'], 
-                    save_steps=kwargs['save_steps'],
-                    start_epoch=kwargs['start_epoch'],
-                    augment=kwargs['augment'],
-                    **d)
 
     def train_bev(self, **kwargs):
-        d = {'num_summary_images': kwargs['num_summary_images']}
         self.bev_trainer.train(restore=kwargs['restore'], 
                     epochs=kwargs['epochs'], 
                     num_samples=kwargs['num_samples'], 
@@ -60,26 +43,10 @@ class ModelTrainer(object):
                     save_steps=kwargs['save_steps'],
                     start_epoch=kwargs['start_epoch'],
                     augment=kwargs['augment'],
-                    **d)
-
-
-    def train_bev_lr_find(self, **kwargs):
-        d = {'num_summary_images': kwargs['num_summary_images']}
-        self.detection_trainer_lr_find.train(restore=kwargs['restore'], 
-                    epochs=kwargs['epochs'], 
-                    num_samples=kwargs['num_samples'], 
-                    training_per=kwargs['training_per'], 
-                    random_seed=kwargs['random_seed'], 
-                    training=kwargs['training'], 
-                    batch_size=kwargs['batch_size'], 
-                    save_steps=kwargs['save_steps'],
-                    start_epoch=kwargs['start_epoch'],
-                    augment=kwargs['augment'],
-                    **d)
+                    fusion=kwargs['train_fusion'])
 
 
     def train_fusion(self, **kwargs):
-        d = {'num_summary_images': kwargs['num_summary_images']}
         self.fusion_trainer.train(restore=kwargs['restore'], 
                     epochs=kwargs['epochs'], 
                     num_samples=kwargs['num_samples'], 
@@ -90,25 +57,6 @@ class ModelTrainer(object):
                     save_steps=kwargs['save_steps'],
                     start_epoch=kwargs['start_epoch'],
                     augment=kwargs['augment'],
-                    **d)
+                    fusion=kwargs['train_fusion'])
 
-    def train_images_seg(self, **kwargs):
-        d = {
-            'epochs_img_head': kwargs['epochs_img_head'],
-            'epochs_img_all': kwargs['epochs_img_all'],
-            'segmentation_kitti': kwargs['segmentation_kitti'],
-            'segmentation_cityscapes': kwargs['segmentation_cityscapes'],
-            'num_summary_images': kwargs['num_summary_images']
-        }
-        self.segmentation_trainer.train(restore=kwargs['restore'], 
-                    epochs=kwargs['epochs'], 
-                    num_samples=kwargs['num_samples'], 
-                    training_per=kwargs['training_per'], 
-                    random_seed=kwargs['random_seed'], 
-                    training=kwargs['training'], 
-                    batch_size=kwargs['batch_size'], 
-                    save_steps=kwargs['save_steps'],
-                    start_epoch=kwargs['start_epoch'],
-                    **d)
- 
-    
+   

@@ -40,30 +40,18 @@ def main(args):
         'segmentation_cityscapes': args.segmentation_cityscapes,
         'num_summary_images': int(args.num_summary_images),
         'start_epoch': int(args.start_epoch),
-        'augment': args.augment
+        'augment': args.augment,
+        'fusion': args.train_fusion
     }
-    if args.train_images_seg:
-        print('Train Segmentation')
-        trainer.train_images_seg(**params)
 
     if args.train_bev:
         print('Train Detection')
         trainer.train_bev(**params)
 
-    if args.train_bev_lr_find:
-        print('Train Detection - LR Find')
-        trainer.train_bev_lr_find(**params)
-
 
     if args.train_fusion:
         print('Train Fusion')
         trainer.train_fusion(**params)
-
-    if args.train_end_to_end:
-        print('Train end to end')
-        trainer.train_end_to_end(**params)
-
-   
 
 
 if __name__ == '__main__':
@@ -80,9 +68,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_summary_images', default=4)
     parser.add_argument('--start_epoch', default=0)
     parser.add_argument('--augment', default=True)
-    parser.add_argument('--train_bev_lr_find', default=False, action='store_true')
     
-    parser.add_argument('--train_end_to_end', default=False, action='store_true')
 
     parser.add_argument('--segmentation_kitti', default=False, action='store_true')
     parser.add_argument('--segmentation_cityscapes', default=False, action='store_true')
@@ -90,7 +76,6 @@ if __name__ == '__main__':
     parser.add_argument('--data_path', default='/Users/apple/Desktop/Master/Data', help='Data path')
     
     parser.add_argument('--train_bev', default=False, help='train bev', action='store_true')
-    parser.add_argument('--train_images_seg', default=False, help='train image header - segmentation', action='store_true')
     parser.add_argument('--train_fusion', default=False, help='train fusion', action='store_true')
     
     args = parser.parse_args()

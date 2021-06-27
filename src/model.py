@@ -52,7 +52,7 @@ class Model(object):
 
                 img_size_1 = 448
                 img_size_2 = 512
-                c_dim = 36
+                c_dim = 35
                 self.train_inputs_lidar = tf.keras.layers.Input(
                                     dtype=tf.float32,
                                     shape=[img_size_1, img_size_2, c_dim], 
@@ -76,11 +76,11 @@ class Model(object):
 
                 fpn_lidar1 = self.cnn_lidar.res_groups2[-1]
 
-                num_conv_blocks=4
-                for i in range(0, num_conv_blocks):
-                    fpn_lidar1 = conv(fpn_lidar1, 96, kernel=3, stride=1, padding='SAME', use_bias=True, scope='conv_post_fpn_11_'+str(i))
-                    fpn_lidar1 = batch_norm(fpn_lidar1, scope='bn_post_fpn_11_' + str(i))
-                    fpn_lidar1 = relu(fpn_lidar1)
+                # num_conv_blocks=4
+                # for i in range(0, num_conv_blocks):
+                #     fpn_lidar1 = conv(fpn_lidar1, 96, kernel=3, stride=1, padding='SAME', use_bias=True, scope='conv_post_fpn_11_'+str(i))
+                #     fpn_lidar1 = batch_norm(fpn_lidar1, scope='bn_post_fpn_11_' + str(i))
+                #     fpn_lidar1 = relu(fpn_lidar1)
 
              
                 if self.params['focal_loss']:

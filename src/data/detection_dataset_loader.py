@@ -17,7 +17,7 @@ from scipy.spatial.transform import Rotation as R
 
 class DetectionDatasetLoader(tf.keras.utils.Sequence):
 
-    def __init__(self, base_path, batch_size=2, training=True, **kwargs):
+    def __init__(self, base_path, batch_size=2, fusion=False, training=True, **kwargs):
         self.defaults = {
             'image_size': (370, 1224),
             'lidar_size': (448, 512, 36), 
@@ -31,6 +31,7 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
         self.batch_size = batch_size
         self.training = training
         self.augment = self.training
+        self.fusion = fusion
 
         if self.training:
             base = 'training'
@@ -93,7 +94,10 @@ class DetectionDatasetLoader(tf.keras.utils.Sequence):
             labels[i, :, :, :, :] = label
                      
                     # yield(camera_image, lidar_image, label)
-        return lidar_images, labels
+        if self.fusion:
+            return (lidar_images, camera_image), labels
+        else:
+            return lidar_images, labels
 
 
 

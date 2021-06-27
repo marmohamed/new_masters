@@ -10,14 +10,14 @@ from utils.nms import *
 
 from loss.losses_v2 import *
 
-from models.ResNetBuilder import *
-from models.ResnetImage import *
-from models.ResnetLidarBEV import *
+from models.ResNetBuilderFusion import *
+from models.ResnetImageFusion import *
+from models.ResnetLidarBEVFusion import *
 from models.ResnetLidarFV import *
 
 from FPN.FPN import *
 
-from Fusion.FusionLayer import *
+# from Fusion.FusionLayer import *
 from PCGrad_tf import *
 
 class Model(object):
@@ -60,7 +60,7 @@ class Model(object):
 
                 img_size_1 = 448
                 img_size_2 = 512
-                c_dim = 36
+                c_dim = 35
                 self.train_inputs_lidar = tf.keras.layers.Input(
                                     dtype=tf.float32,
                                     shape=[img_size_1, img_size_2, c_dim], 
@@ -68,27 +68,50 @@ class Model(object):
 
                 self.y_true = tf.keras.layers.Input(dtype=tf.float32, shape=(112, 128, 2, 13)) # target
 
+                self.cnn = ResNetBuilderFusion().build(branch=self.CONST.IMAGE_BRANCH, img_height=370, img_width=1224, img_channels=3)
+                self.cnn.build_model(self.train_inputs_rgb)
 
-                self.cnn_lidar = ResNetBuilder().build(branch=self.CONST.BEV_BRANCH, img_height=512, img_width=448, img_channels=40)
+                self.cnn_lidar = ResNetBuilderFusion().build(branch=self.CONST.BEV_BRANCH, img_height=512, img_width=448, img_channels=35)
                 self.cnn_lidar.build_model(self.train_inputs_lidar)
                 
-            
-                self.cnn_lidar.res_groups2 = self.cnn_lidar.res_groups
+                layer_image = self.train_inputs_rgb
+                layer_lidar = self.train_inputs_lidar
+                self.cnn.res_groups2 = []
+                self.cnn_lidar.res_groups2 = []
+                kernels_lidar = [9, 5, 5]
+                strides_lidar = [5, 3, 3]
+                kernels_rgb = [7, 5, 5]
+                strides_rgb = [4, 3, 3]
+                lidar_loc = [1, 2, 3]
+                last_lidar_layer=None
+                for indx in range(4):
+                    print(indx)
+                    layer_image = self.cnn.get_layer(layer_image, indx)
 
+                    layer_lidar = self.cnn_lidar.get_layer(layer_lidar, indx, last_lidar_layer)
 
-                # fpn_lidar = FPN(self.cnn_lidar.res_groups2, scope="fpn_lidar")
-                # fpn_lidar[0] = maxpool2d(fpn_lidar[0], scope="fpn_lidar_maxpool_0")
-                #         # fpn_lidar[-1] = upsample(fpn_lidar[-1], scope="fpn_lidar_upsample_0", filters=128, use_deconv=True, kernel_size=4)
+                    if indx > 0:
+                        att_lidar, att_rgb = AttentionFusionLayerFunc3(layer_image, layer_lidar,\
+                                                                            'attention_fusion_'+str(indx-1),\
+                                                                            kernel_lidar=kernels_lidar[indx-1],\
+                                                                            kernel_rgb=kernels_rgb[indx-1],\
+                                                                            stride_lidar=strides_lidar[indx-1],\
+                                                                            stride_rgb=strides_rgb[indx-1])
+                        last_lidar_layer = layer_lidar
+                        layer_lidar = att_lidar
+                        layer_image = att_rgb
 
-                # fpn_lidar = tf.concat(fpn_lidar, axis=-1)
+                    self.cnn_lidar.res_groups2.append(layer_lidar)
+                    self.cnn.res_groups2.append(layer_image)
+
 
                 fpn_lidar1 = self.cnn_lidar.res_groups2[-1]
 
-                num_conv_blocks=4
-                for i in range(0, num_conv_blocks):
-                    fpn_lidar1 = conv(fpn_lidar1, 96, kernel=3, stride=1, padding='SAME', use_bias=True, scope='conv_post_fpn_11_'+str(i))
-                    fpn_lidar1 = batch_norm(fpn_lidar1, scope='bn_post_fpn_11_' + str(i))
-                    fpn_lidar1 = relu(fpn_lidar1)
+                # num_conv_blocks=4
+                # for i in range(0, num_conv_blocks):
+                #     fpn_lidar1 = conv(fpn_lidar1, 96, kernel=3, stride=1, padding='SAME', use_bias=True, scope='conv_post_fpn_11_'+str(i))
+                #     fpn_lidar1 = batch_norm(fpn_lidar1, scope='bn_post_fpn_11_' + str(i))
+                #     fpn_lidar1 = relu(fpn_lidar1)
 
              
                 if self.params['focal_loss']:

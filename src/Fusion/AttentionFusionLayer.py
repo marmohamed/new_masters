@@ -3,51 +3,41 @@ import tensorflow as tf
 from ops.ops import *
 
 
-def AttentionFusionLayerFunc3(original_rgb_features, fv_lidar_features, train_fusion_fv_lidar,
-                              original_lidar_feats, scope, is_training=True, kernel_lidar=5,
-                              kernel_rgb=5, stride_lidar=3, stride_rgb=3, reuse=False):
-        
-        lidar_features = conv(original_lidar_feats, 64, kernel=kernel_lidar, stride=stride_lidar, scope=scope+'conv_bev', reuse=reuse)
-        lidar_features = batch_norm(lidar_features, is_training=is_training, scope='bn_fusion_lidar')
+def AttentionFusionLayerFunc3(rgb_features, lidar_features, scope, kernel_lidar=5,
+                              kernel_rgb=5, stride_lidar=3, stride_rgb=3):
+        c1 = rgb_features.shape[-1]
+        c2 = lidar_features.shape[-1]
+        lidar_features = conv(lidar_features, 64, kernel=1, stride=1, scope=scope+'conv_bev')
+        lidar_features = batch_norm(lidar_features, scope='bn_fusion_lidar')
+        lidar_features = relu(lidar_features)
+        lidar_shape = lidar_features.shape
+        lidar_features2 = tf.keras.layers.Reshape((-1 ,64))(lidar_features)
+
+        rgb_features = conv(rgb_features, 64,  kernel=1, stride=1, scope=scope+'conv_rgb')
+        rgb_features = batch_norm(rgb_features,  scope='bn_fusion_rgb')
+        rgb_features = relu(rgb_features)
+        rgb_shape = rgb_features.shape
+        rgb_features2 = tf.keras.layers.Reshape((-1 ,64))(rgb_features)
+       
+        query_value_attention_seq = tf.keras.layers.Attention()(
+            [lidar_features2, rgb_features2])
+        query_value_attention_seq = tf.keras.layers.Reshape(( lidar_shape[1], lidar_shape[2],64))(query_value_attention_seq)
+        lidar_features = lidar_features + query_value_attention_seq
+
+        lidar_features = conv(lidar_features, c2, kernel=1, stride=1, scope=scope+'conv_bev')
+        lidar_features = batch_norm(lidar_features, scope='bn_fusion_lidar')
         lidar_features = relu(lidar_features)
 
+        query_value_attention_seq = tf.keras.layers.Attention()(
+            [rgb_features2, lidar_features2])
+        query_value_attention_seq = tf.keras.layers.Reshape(( rgb_shape[1], rgb_shape[2], 64))(query_value_attention_seq)
+        rgb_features = rgb_features + query_value_attention_seq
 
-        rgb_features = conv(original_rgb_features, 64,  kernel=kernel_rgb, stride=stride_rgb, scope=scope+'conv_rgb', reuse=reuse)
-        rgb_features = batch_norm(rgb_features, is_training=is_training, scope='bn_fusion_rgb')
+        rgb_features = conv(rgb_features, c1, kernel=1, stride=1, scope=scope+'conv_bev')
+        rgb_features = batch_norm(rgb_features, scope='bn_fusion_lidar')
         rgb_features = relu(rgb_features)
-       
-       
-        query_value_attention_seq = tf.keras.layers.Attention()(
-            [lidar_features, rgb_features])
 
-        # Reduce over the sequence axis to produce encodings of shape
-        # [batch_size, filters].
-        query_encoding = tf.keras.layers.GlobalAveragePooling2D()(
-            lidar_features)
-        query_value_attention = tf.keras.layers.GlobalAveragePooling2D()(
-            query_value_attention_seq)
-
-        # Concatenate query and document encodings to produce a DNN input layer.
-        input_layer = tf.keras.layers.Concatenate()(
-            [query_encoding, query_value_attention])
-        ######
-        query_value_attention_seq = tf.keras.layers.Attention()(
-            [rgb_features, lidar_features])
-
-        # Reduce over the sequence axis to produce encodings of shape
-        # [batch_size, filters].
-        query_encoding = tf.keras.layers.GlobalAveragePooling2D()(
-            rgb_features)
-        query_value_attention = tf.keras.layers.GlobalAveragePooling2D()(
-            query_value_attention_seq)
-
-        # Concatenate query and document encodings to produce a DNN input layer.
-        input_layer2 = tf.keras.layers.Concatenate()(
-            [query_encoding, query_value_attention])
-
-        
-
-    return original_lidar_feats2, original_rgb_features2
+        return lidar_features, rgb_features
 
 
 
