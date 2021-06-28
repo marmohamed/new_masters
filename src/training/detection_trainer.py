@@ -59,12 +59,10 @@ class DetectionTrainer(Trainer):
                         mode="min",
                     )
         callbacks = [save_ckpt]
-        # self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=3769//batch_size,
-        #                      validation_data=self.eval_dataset, validation_steps=3712//2,
-        #                      callbacks=callbacks)
-        self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=10,
-                             validation_data=self.eval_dataset, validation_steps=10,
+        self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=3769//batch_size,
+                             validation_data=self.eval_dataset, validation_steps=3712//2,
                              callbacks=callbacks)
+        
 
 
    
