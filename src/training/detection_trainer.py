@@ -55,12 +55,8 @@ class DetectionTrainer(Trainer):
                         ckpt_path,
                         monitor="val_loss",
                         verbose=0,
-                        save_best_only=False,
-                        save_weights_only=False,
-                        mode="auto",
-                        save_freq="epoch",
-                        options=None,
-                        **kwargs
+                        save_best_only=True,
+                        mode="min",
                     )
         callbacks = [save_ckpt]
         self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=7481//batch_size,
