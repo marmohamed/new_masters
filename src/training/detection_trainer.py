@@ -16,7 +16,6 @@ from models.ResnetLidarFV import *
 from FPN.FPN import *
 from data.detection_dataset_loader import *
 from training.Trainer import *
-from training import clr
 
 from evaluation.evaluate import *
 from utils.summary_images_utils import *
