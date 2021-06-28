@@ -52,17 +52,20 @@ class DetectionTrainer(Trainer):
             self.model.model = tf.keras.models.load_model(ckpt_path)
 
         save_ckpt = tf.keras.callbacks.ModelCheckpoint(
-                        ckpt_path,
+                        'model.{epoch:02d}-{val_loss:.4f}.h5',
                         monitor="val_loss",
-                        verbose=0,
+                        verbose=1,
                         save_best_only=True,
                         mode="min",
                     )
         callbacks = [save_ckpt]
-        self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=3769//batch_size,
-                             validation_data=self.eval_dataset, validation_steps=3712//2,
+        # self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=3769//batch_size,
+        #                      validation_data=self.eval_dataset, validation_steps=3712//2,
+        #                      callbacks=callbacks)
+        self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=1,
+                             validation_data=self.eval_dataset, validation_steps=1,
                              callbacks=callbacks)
-        
+
 
 
    
