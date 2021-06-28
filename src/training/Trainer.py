@@ -14,8 +14,6 @@ from models.ResnetImage import *
 from models.ResnetLidarBEV import *
 from models.ResnetLidarFV import *
 from FPN.FPN import *
-from Fusion.FusionLayer import *
-from data.segmentation_dataset_loader import *
 from data.detection_dataset_loader import *
 
 
