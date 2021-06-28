@@ -18,7 +18,6 @@ from models.ResnetLidarFV import *
 from FPN.FPN import *
 
 from Fusion.FusionLayer import *
-from PCGrad_tf import *
 
 class Model(object):
 
