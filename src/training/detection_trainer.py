@@ -53,26 +53,6 @@ class DetectionTrainer(Trainer):
         pass
 
 
-    def __prepare_dataset_feed_dict(self, dataset, train_fusion_rgb, is_training=True, batch_size=1):
-
-        data = dataset.get_next(batch_size=batch_size)
-       
-        camera_tensor, lidar_tensor, label_tensor = data
-        # d = {self.model.train_inputs_rgb: camera_tensor,
-        #         self.model.train_inputs_lidar: lidar_tensor,
-        #         self.model.y_true: label_tensor,                   
-        #         self.model.train_fusion_rgb: train_fusion_rgb,
-        #         self.model.is_training: is_training
-        #         }
-        d = {
-                self.model.train_inputs_lidar: lidar_tensor,
-                self.model.y_true: label_tensor,                   
-                self.model.train_fusion_rgb: train_fusion_rgb,
-                self.model.is_training: is_training
-                }
-        return d
-
-
 
     def train(self, restore=True, 
                     epochs=200, 
