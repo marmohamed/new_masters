@@ -13,12 +13,7 @@ from models.ResnetImage import *
 from models.ResnetLidarBEV import *
 from models.ResnetLidarFV import *
 from FPN.FPN import *
-from Fusion.FusionLayer import *
 from training.Trainer import *
-from training.segmentation_trainer import *
-from training.detection_trainer import *
-from training.detection_trainer_lr_find import *
-
 
 
 
