@@ -54,25 +54,36 @@ class DetectionTrainer(Trainer):
 
 
 
-    def train(self, restore=True, 
-                    epochs=200, 
-                    num_samples=None, 
-                    training_per=0.5, 
-                    random_seed=42, 
-                    training=True, 
-                    batch_size=1, 
-                    save_steps=100,
+    def train(self, restore=None, 
+                    ckpt_path=None,
+                    epochs=1, 
+                    random_seed=0, 
+                    batch_size=4, 
                     start_epoch=0,
-                    augment=True,
-                    fusion=False,
-                    **kwargs):
+                    fusion=False):
 
         self.dataset = DetectionDatasetLoader(self.data_base_path, batch_size=batch_size, fusion=fusion, training=True)
 
         self.eval_dataset = DetectionDatasetLoader(self.data_base_path, batch_size=2, fusion=fusion, training=False)
 
+        if restore is not None:
+            self.model.model = tf.keras.models.load_model(ckpt_path)
+
+        save_ckpt = tf.keras.callbacks.ModelCheckpoint(
+                        ckpt_path,
+                        monitor="val_loss",
+                        verbose=0,
+                        save_best_only=False,
+                        save_weights_only=False,
+                        mode="auto",
+                        save_freq="epoch",
+                        options=None,
+                        **kwargs
+                    )
+        callbacks = [save_ckpt]
         self.model.model.fit(self.dataset, epochs=epochs, steps_per_epoch=7481//batch_size,
-                             validation_data=self.eval_dataset, validation_steps=7481//2)
+                             validation_data=self.eval_dataset, validation_steps=7481//2,
+                             callbacks=callbacks)
 
 
    

@@ -32,31 +32,23 @@ class ModelTrainer(object):
         self.bev_trainer = BEVDetectionTrainer(self.model, self.data_base_path, None)
 
 
-    def train_bev(self, **kwargs):
-        self.bev_trainer.train(restore=kwargs['restore'], 
-                    epochs=kwargs['epochs'], 
-                    num_samples=kwargs['num_samples'], 
-                    training_per=kwargs['training_per'], 
-                    random_seed=kwargs['random_seed'], 
-                    training=kwargs['training'], 
-                    batch_size=kwargs['batch_size'], 
-                    save_steps=kwargs['save_steps'],
-                    start_epoch=kwargs['start_epoch'],
-                    augment=kwargs['augment'],
-                    fusion=kwargs['train_fusion'])
+    def train_bev(self, args):
+        self.bev_trainer.train(restore=args.restore, 
+                    ckpt_path=args.ckpt_path,
+                    epochs=args.epochs, 
+                    random_seed=args.random_seed, 
+                    batch_size=args.batch_size, 
+                    start_epoch=args.start_epoch,
+                    fusion=args.train_fusion)
 
 
     def train_fusion(self, **kwargs):
-        self.fusion_trainer.train(restore=kwargs['restore'], 
-                    epochs=kwargs['epochs'], 
-                    num_samples=kwargs['num_samples'], 
-                    training_per=kwargs['training_per'], 
-                    random_seed=kwargs['random_seed'], 
-                    training=kwargs['training'], 
-                    batch_size=kwargs['batch_size'], 
-                    save_steps=kwargs['save_steps'],
-                    start_epoch=kwargs['start_epoch'],
-                    augment=kwargs['augment'],
-                    fusion=kwargs['train_fusion'])
+        self.fusion_trainer.train(restore=args.restore, 
+                    ckpt_path=args.ckpt_path,
+                    epochs=args.epochs, 
+                    random_seed=args.random_seed, 
+                    batch_size=args.batch_size, 
+                    start_epoch=args.start_epoch,
+                    fusion=args.train_fusion)
 
    
