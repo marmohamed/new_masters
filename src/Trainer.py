@@ -14,6 +14,7 @@ from models.ResnetLidarBEV import *
 from models.ResnetLidarFV import *
 from FPN.FPN import *
 from training.Trainer import *
+from training.detection_trainer import *
 
 
 
