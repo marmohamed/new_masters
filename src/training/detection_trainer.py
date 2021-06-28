@@ -33,24 +33,9 @@ import os
 
 class DetectionTrainer(Trainer):
 
-    __metaclass__ = ABCMeta
-
     def __init__(self, model, data_base_path, dataset):
         super(DetectionTrainer, self).__init__(model, data_base_path, dataset)
-        self._set_params()
-        self.count_not_best = 0
-        self.base_lr = 0.0001
-        self.count_not_best_cls = 0
-        self.count_not_best_loc = 0
-        self.count_not_best_dir = 0
-        self.count_not_best_dim = 0
-        self.count_not_best_theta = 0
-        
-
-    @abstractmethod
-    def _set_params(self):
-        pass
-
+    
 
 
     def train(self, restore=None, 
@@ -86,26 +71,6 @@ class DetectionTrainer(Trainer):
 
 
    
-        
-
-      
-
-class BEVDetectionTrainer(DetectionTrainer):
-
-    def _set_params(self):
-        pass
-
-        
-class FusionDetectionTrainer(DetectionTrainer):
     
-    def _set_params(self):
-        pass
-
-
-class EndToEndDetectionTrainer(DetectionTrainer):
-    
-    def _set_params(self):
-        pass
-
 
 

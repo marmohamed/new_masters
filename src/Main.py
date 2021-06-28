@@ -21,15 +21,7 @@ def main(args):
 
     trainer = ModelTrainer(model=model, data_base_path=args.data_path)
 
-
-    if args.train_bev:
-        print('Train Detection')
-        trainer.train_bev(args)
-
-
-    if args.train_fusion:
-        print('Train Fusion')
-        trainer.train_fusion(args)
+    trainer.train(args)
 
 
 if __name__ == '__main__':

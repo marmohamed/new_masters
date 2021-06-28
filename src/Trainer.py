@@ -23,12 +23,11 @@ class ModelTrainer(object):
         self.model = model
         self.data_base_path = data_base_path
 
-        self.fusion_trainer = FusionDetectionTrainer(self.model, self.data_base_path, None)
-        self.bev_trainer = BEVDetectionTrainer(self.model, self.data_base_path, None)
+        self.trainer = DetectionTrainer(self.model, self.data_base_path, None)
 
 
-    def train_bev(self, args):
-        self.bev_trainer.train(restore=args.restore, 
+    def train(self, args):
+        self.trainer.train(restore=args.restore, 
                     ckpt_path=args.ckpt_path,
                     epochs=args.epochs, 
                     random_seed=args.random_seed, 
@@ -37,13 +36,3 @@ class ModelTrainer(object):
                     fusion=args.train_fusion)
 
 
-    def train_fusion(self, **kwargs):
-        self.fusion_trainer.train(restore=args.restore, 
-                    ckpt_path=args.ckpt_path,
-                    epochs=args.epochs, 
-                    random_seed=args.random_seed, 
-                    batch_size=args.batch_size, 
-                    start_epoch=args.start_epoch,
-                    fusion=args.train_fusion)
-
-   

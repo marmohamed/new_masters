@@ -27,16 +27,13 @@ class Trainer(object):
         self.dataset = dataset
 
     @abstractmethod
-    def train(self, sess, restore=True, 
-                    epochs=200, 
-                    num_samples=None, 
-                    training_per=0.5, 
-                    random_seed=42, 
-                    training=True, 
-                    batch_size=1, 
-                    save_steps=100,
+    def train(self, restore=None, 
+                    ckpt_path=None,
+                    epochs=1, 
+                    random_seed=0, 
+                    batch_size=4, 
                     start_epoch=0,
-                    **kwargs):
+                    fusion=False):
         pass
 
 
