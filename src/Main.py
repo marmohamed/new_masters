@@ -4,7 +4,7 @@ import argparse
 
 def main(args):
     print('Building the model')
-    if args.train_fusion or args.train_end_to_end:
+    if args.train_fusion:
         from model_fusion import Model
         params = {
             'fusion': True
